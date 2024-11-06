@@ -9,6 +9,19 @@ class Character { // 캐릭터 클래스: 이름, 체력, 공격력, 방어력
 
   Character(this.name, this.health, this.attack, this.defense);
 
+  void attackMonster(Monster monster) { //몬스터 공격 메서드
+    int damage = attack - monster.defense;
+    if (damage > 0) {
+      monster.health -= damage;
+    }
+    print('$name이(가) ${monster.name}에게 $damage 데미지를 입혔습니다.');
+  }
+
+  void defend(int monsterAttack) {//방어 메서드, 체력 회복
+    health += monsterAttack;
+    print('$name이(가) 방어하여 체력을 $monsterAttack만큼 회복했습니다.');
+  }
+  
   void showStatus() {
     print('캐릭터 상태 - 이름: $name, 체력: $health, 공격력: $attack, 방어력: $defense');
   }
