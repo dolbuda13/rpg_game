@@ -21,8 +21,8 @@ class Character { // 캐릭터 클래스: 이름, 체력, 공격력, 방어력
     health += monsterAttack;
     print('$name이(가) 방어하여 체력을 $monsterAttack만큼 회복했습니다.');
   }
-  
-  void showStatus() {
+
+  void showStatus() {//캐릭터 상태 메서드
     print('캐릭터 상태 - 이름: $name, 체력: $health, 공격력: $attack, 방어력: $defense');
   }
 }
@@ -30,12 +30,20 @@ class Character { // 캐릭터 클래스: 이름, 체력, 공격력, 방어력
 class Monster {
   String name;
   int health;
-  int maxAttack;
-  int defense = 0;
+  int maxAttack;//몬스터의 공격력>캐릭터의 방어력
+  int defense = 0;//방어력 0 고정
 
   Monster(this.name, this.health, this.maxAttack);
 
-  void showStatus() {
+  void attackCharacter(Character character) {
+    int attackPower = max(character.defense, Random().nextInt(maxAttack));     
+    // character.defense와 랜덤 공격력 중 큰 값을 공격력으로 설정
+    int damage = attackPower - character.defense;//attackPower은 캐릭터 방어력보다 무조건 크거나 같으므로 데미지는 0이상
+    character.health -= damage;
+    print('$name이(가) ${character.name}에게 $damage 데미지를 입혔습니다.');
+  }
+
+  void showStatus() {//몬스터 상태 메서드
     print('몬스터 상태 - 이름: $name, 체력: $health, 공격력: $maxAttack');
   }
 }
