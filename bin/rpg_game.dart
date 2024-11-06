@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:io';
-import 'dart:math';
 
 class Character { // 캐릭터 클래스: 이름, 체력, 공격력, 방어력
   String name; // 이름은 입력받을 것
