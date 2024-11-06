@@ -1,6 +1,62 @@
 import 'dart:io';
 import 'dart:math';
 
+class Game {//게임 진행 방식 정의
+  Character character;
+  List<Monster> monsters;
+  int defeatedMonsters = 0;
+
+  Game(this.character, this.monsters);
+
+  void startGame() {//게임을 시작하고 종료하는 메서드
+    print("게임을 시작합니다!");
+    while (character.health > 0 && defeatedMonsters < monsters.length) {
+      battle();
+      if (character.health <= 0) {//캐릭터 체력 0되면 종료
+        print("캐릭터가 쓰러졌습니다. 게임 종료.");
+        break;
+      }
+      if (defeatedMonsters == monsters.length) {
+        print("모든 몬스터를 물리쳤습니다. 승리!");
+        break;
+      }
+      print("다음 몬스터와 대결하시겠습니까? (y/n)");
+      String choice = stdin.readLineSync() ?? 'n';
+      if (choice.toLowerCase() != 'y') {
+        break;
+      }
+    }
+  }
+
+  void battle() {//전투 진행: 1이면 공격, 2이면 방어
+    Monster monster = getRandomMonster();
+    while (monster.health > 0 && character.health > 0) {
+      print("행동을 선택하세요: 공격하기(1), 방어하기(2)");
+      String choice = stdin.readLineSync() ?? '1';
+      if (choice == '1') {
+        character.attackMonster(monster);
+      } else if (choice == '2') {
+        int attackPower = monster.attackCharacter(character); // 몬스터가 공격하고 공격력을 반환받습니다.
+        character.defend(attackPower);
+      }
+      if (monster.health > 0) {
+        monster.attackCharacter(character);
+      }
+      character.showStatus();
+      monster.showStatus();
+    }
+    if (monster.health <= 0) {
+      defeatedMonsters++;
+      print('${monster.name}을(를) 물리쳤습니다.');
+      monsters.remove(monster);
+    }
+  }
+
+  Monster getRandomMonster() {//몬스터 리스트에서 랜덤으로 몬스터 뽑기
+    return monsters[Random().nextInt(monsters.length)];
+  }
+}
+
 class Character { // 캐릭터 클래스: 이름, 체력, 공격력, 방어력
   String name; // 이름은 입력받을 것
   int health;
@@ -35,12 +91,13 @@ class Monster {
 
   Monster(this.name, this.health, this.maxAttack);
 
-  void attackCharacter(Character character) {
+  int attackCharacter(Character character) {//캐릭터 공격 메서드
     int attackPower = max(character.defense, Random().nextInt(maxAttack));     
     // character.defense와 랜덤 공격력 중 큰 값을 공격력으로 설정
     int damage = attackPower - character.defense;//attackPower은 캐릭터 방어력보다 무조건 크거나 같으므로 데미지는 0이상
     character.health -= damage;
     print('$name이(가) ${character.name}에게 $damage 데미지를 입혔습니다.');
+    return attackPower;//공격값 반환
   }
 
   void showStatus() {//몬스터 상태 메서드
@@ -104,7 +161,6 @@ void main() {
   Character character = loadCharacter(name); // 캐릭터 데이터 불러오기
   character.showStatus(); // 캐릭터 상태 출력
   List<Monster> monsters = loadMonsters();
-  for (var monster in monsters) {
-    monster.showStatus(); // 몬스터 데이터 불러와지는지 확인
-  }
+  Game game = Game(character, monsters);//게임 시작
+  game.startGame();
 }
