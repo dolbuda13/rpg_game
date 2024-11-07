@@ -1,2 +1,56 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+RPG 게임 프로그램
+=======================
+시나리오
+--------------
+1. 플레이어 이름을 받는다.(파일에 플레이어 체력 공격력 방어력 정보는 들어있다.)       
+2. 싸울 몬스터 하나를 파일에서 랜덤으로 뽑는다.     
+3. 1(공격), 2(방어) 둘 중 하나의 행동을 선택한다
+>데미지와 회복량은 txt파일에 명시된 범위 내에서 random을 통해 값을 정한다.
+4. 몬스터가 쓰러질 때까지 반복.   
+5. 몬스터가 쓰러진다면 계속 싸울지 y/n(n인 경우 중도포기)    
+6. 모든 몬스터를 쓰러뜨렸다면 승리   
+7. 그 전에 플레이어 체력을 모두 소진한다면 패배
+8. 싸움 결과를 저장 y/n
+           
+Game Class
+----------
+속성
+>1. 캐릭터    
+>2. 몬스터 리스트    
+>3. 물리친 몬스터 개수   
+메서드
+>1. 게임을 시작하는 메서드(startGame())    
+>2. 전투를 진행하는 메서드(battle())    
+>3. 랜덤으로 몬스터를 불러오는 메서드(getRandomMonster())          
+
+Character Class
+-------------
+속성
+>1. 이름(string)    
+>2. 체력(int)    
+>3. 공격력(int)      
+>4. 방어력(int)      
+
+메서드
+>1. 공격 메서드(attackMonster(Monster monster))   
+>2. 방어 메서드(defend())     
+>3. 상태를 출력하는 메서드 (showStatus())             
+       
+Monster Class
+--------------
+속성
+>1. 이름(string)    
+>2. 체력(int)    
+>3. 랜덤으로 지정할 공격력 범위 최대값(int)      
+>4. 방어력(int)=0          
+      
+메서드
+>1. 공격 메서드(attackCharacter(Character character))         
+>2. 상태를 출력하는 메서드(showStatus())        
+
+함수
+-------
+1. character.txt 파일로부터 데이터 읽어오기(CSV 형식)    
+2. monsters.txt 파일로부터 데이터 읽어오기(CSV 형식)   
+3. 캐릭터 이름 입력받는 함수   
+4. 싸움 결과 저장하는 함수    
