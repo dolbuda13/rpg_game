@@ -133,7 +133,7 @@
       exit(1);
     }
   }
-  List<Monster> loadMonsters() {
+  List<Monster> loadMonsters() {//몬스터 정보 읽어오는 함수
     List<Monster> monsters = [];
     try {
       final file = File('C:\\Users\\KGE\\dart\\monsters.txt');
