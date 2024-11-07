@@ -9,18 +9,20 @@
     Game(this.character, this.monsters);
 
     void startGame() {//게임을 시작하고 종료하는 메서드
-      print("게임을 시작합니다!");
       while (character.health > 0 && monsters.isNotEmpty) {
         battle();
         if (character.health <= 0) {//캐릭터 체력 0되면 종료
           print("캐릭터가 쓰러졌습니다. 게임 종료.");
+          saveResult(character, "패배");
           break;
         }
         if (monsters.isEmpty) {
           print("모든 몬스터를 물리쳤습니다. 승리!");
+          saveResult(character, "승리");
           break;
         }
-        print("다음 몬스터와 대결하시겠습니까? (y/n)");
+        print(" ");
+        print("다음 몬스터와 싸우시겠습니까? (y/n)");
         String choice = stdin.readLineSync() ?? 'n';
         if (choice.toLowerCase() != 'y') {
           break;
@@ -34,7 +36,9 @@
       monster.showStatus(); // 새로운 몬스터의 정보를 출력
 
       while (monster.health > 0 && character.health > 0) {
-        print("행동을 선택하세요: 공격하기(1), 방어하기(2)");//행동 선택
+        print(" ");
+        print("${character.name}의 턴");
+        print("행동을 선택하세요 (1: 공격, 2: 방어)");//행동 선택
         String choice = stdin.readLineSync() ?? '1';
         if (choice == '1') {//공격
           character.attackMonster(monster);
@@ -43,6 +47,8 @@
           character.defend(attackPower);
         }
         if (monster.health > 0) {
+          print(" ");
+          print("${monster.name}의 턴");
           monster.attackCharacter(character);
         }
         character.showStatus();
@@ -78,11 +84,11 @@
 
     void defend(int monsterAttack) {//방어 메서드, 체력 회복
       health += monsterAttack;
-      print('$name이(가) 방어하여 체력을 $monsterAttack만큼 회복했습니다.');
+      print('$name이(가) 방어 태세를 취하여 $monsterAttack만큼 체력을 얻었습니다.');
     }
 
     void showStatus() {//캐릭터 상태 메서드
-      print('캐릭터 상태 - 이름: $name, 체력: $health, 공격력: $attack, 방어력: $defense');
+      print('$name - 체력: $health, 공격력: $attack, 방어력: $defense');
     }
   }
 
@@ -104,7 +110,7 @@
     }
 
     void showStatus() {//몬스터 상태 메서드
-      print('몬스터 상태 - 이름: $name, 체력: $health, 공격력: $maxAttack');
+      print('$name - 체력: $health, 공격력: $maxAttack');
     }
   }
 
@@ -146,6 +152,15 @@
     return monsters;
   }
 
+void saveResult(Character character, String result) {//결과 저장 함수
+  print("결과를 저장하시겠습니까? (y/n)");
+  String choice = stdin.readLineSync() ?? 'n';
+  if (choice.toLowerCase() == 'y') {
+    final file = File('result.txt');
+    file.writeAsStringSync(
+        '캐릭터 이름: ${character.name}\n남은 체력: ${character.health}\n게임 결과: $result');
+  }
+}
 
   String getCharacterName() {//캐릭터 이름 입력받는 함수
     while (true) {
@@ -162,6 +177,7 @@
   void main() {
     String name = getCharacterName();
     Character character = loadCharacter(name); // 캐릭터 데이터 불러오기
+    print("게임을 시작합니다!");
     character.showStatus(); // 캐릭터 상태 출력
     List<Monster> monsters = loadMonsters();
     Game game = Game(character, monsters);//게임 시작
